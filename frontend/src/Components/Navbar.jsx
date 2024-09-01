@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
@@ -26,10 +27,10 @@ function Navbar() {
             className="menu menu-sm dropdown-content bg-slate-700 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
             <li className="hover:bg-slate-900 rounded-lg">
-              <a>Homepage</a>
+              <Link to="/user/signup">Sign up</Link>
             </li>
             <li className="hover:bg-slate-900 rounded-lg">
-              <a>Portfolio</a>
+              <Link to="/user/login">Login</Link>
             </li>
             <li className="hover:bg-slate-900 rounded-lg">
               <a>About</a>
