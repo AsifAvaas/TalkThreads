@@ -46,7 +46,7 @@ router.post('/user/create', body('name', 'Name must be 6 charecter Long').isLeng
                 token: crypto.randomBytes(32).toString('hex')
             }).save()
 
-            const url = `${process.env.FrontEnd}/auth/${user._id}/verify/${token.token}`
+            const url = `${process.env.BACKEND}/auth/${user._id}/verify/${token.token}`
             await sendEmail(user.email, "Verify Email", url)
 
             res.json({ success: true, message: "An Email has been send to your account. Please verify." });
@@ -65,43 +65,103 @@ router.post('/user/login', async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: "User is not registered" });
+            return res.status(200).json({ error: "User is not registered" });
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(401).json({ message: "Incorrect Password" });
+            return res.status(200).json({ error: "Incorrect Password" });
         }
 
         if (!user.isVerified) {
             console.log("user is not verified")
+            let token = await Token.findOne({ userId: user._id })
+            if (!token) {
+                token = await new Token({
+                    userId: user._id,
+                    token: crypto.randomBytes(32).toString('hex')
+                }).save()
+                const url = `${process.env.BACKEND}/auth/${user._id}/verify/${token.token}`
+                await sendEmail(user.email, "Verify Email", url)
+                console.log("all ok")
 
-            let token = await new Token({
-                userId: user._id,
-                token: crypto.randomBytes(32).toString('hex')
-            }).save()
-            const url = `${process.env.FrontEnd}/auth/${user._id}/verify/${token.token}`
-            await sendEmail(user.email, "Verify Email", url)
-
-
+            }
             return res.status(200).json({ message: "An Email has been send to your account. Please verify." })
-
         }
 
         const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_SECRET, { expiresIn: '15m' });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.REFRESH_SECRET, { expiresIn: '30d' });
 
-        res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 900000 });
+        res.cookie('accessToken', accessToken, { httpOnly: true });
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
 
-        res.json({ success: true, message: "Logged in successfully" });
+        res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Server error" });
+        //console.error(error);
+        res.status(500).json({ success: false, error: "Server error" });
     }
 
 })
 
+router.post('/google/login', async (req, res) => {
+    const { name, email, profilePic } = req.body
+    try {
+        let user = await User.findOne({ email: email })
+        if (!user) {
+            user = await new User({
+                name: name,
+                email: email,
+                password: "",
+                profilePic: profilePic,
+                isVerified: true
+            }).save()
+        }
+        const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_SECRET, { expiresIn: '15m' });
+        const refreshToken = jwt.sign({ userId: user._id }, process.env.REFRESH_SECRET, { expiresIn: '30d' });
+
+        res.cookie('accessToken', accessToken, { httpOnly: true });
+        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+
+        res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken });
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+})
+
+
+
+router.post('/user/resend', async (req, res) => {
+    const { email, password } = req.body
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(200).json({ error: "User is not registered" });
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(200).json({ error: "Incorrect Password" });
+        }
+        let token = await Token.findOne({ userId: user._id })
+        if (!token) {
+            token = await new Token({
+                userId: user._id,
+                token: crypto.randomBytes(32).toString('hex')
+            }).save()
+
+
+
+        }
+        const url = `${process.env.BACKEND}/auth/${user._id}/verify/${token.token}`
+        await sendEmail(user.email, "Verify Email", url)
+        res.json({ success: true });
+
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+})
 
 // axios.defaults.withCredentials=true
 
@@ -120,8 +180,8 @@ router.get("/:id/verify/:token", async (req, res) => {
 
         await user.updateOne({ _id: user._id, isVerified: true })
         await Token.deleteOne({ _id: token._id });
-
-        res.status(200).json({ message: "Varification successful" })
+        res.redirect(`http://localhost:3000/user/login`)
+        // res.status(200).json({ message: "Varification successful" })
 
     } catch (error) {
         console.log(error)
@@ -132,7 +192,18 @@ router.get("/:id/verify/:token", async (req, res) => {
 
 
 
+router.post('/logout', async (req, res) => {
+    res.cookie('accessToken', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.cookie('refreshToken', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
 
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
+})
 
 
 module.exports = router

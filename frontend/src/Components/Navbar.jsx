@@ -1,7 +1,27 @@
 import React from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import icon from "../assets/Icon-white.png";
+import fullTitle from "../assets/full_title.png";
 function Navbar() {
+  const navigate = useNavigate();
+  const logout = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_Backend_Route}/auth/logout`
+      );
+      if (response.data.success) {
+        localStorage.clear();
+        navigate("/user/login");
+      } else {
+        alert("failed to log out");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const signedIn = localStorage.getItem("userId");
+  const userMail = localStorage.getItem("email");
   return (
     <div className="navbar bg-slate-800">
       <div className="navbar-start">
@@ -26,11 +46,14 @@ function Navbar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-slate-700 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
+            {userMail && (
+              <li className="hover:bg-slate-900 rounded-lg">
+                <div>{userMail}</div>
+              </li>
+            )}
+
             <li className="hover:bg-slate-900 rounded-lg">
-              <Link to="/user/signup">Sign up</Link>
-            </li>
-            <li className="hover:bg-slate-900 rounded-lg">
-              <Link to="/user/login">Login</Link>
+              <div>Profile</div>
             </li>
             <li className="hover:bg-slate-900 rounded-lg">
               <a>About</a>
@@ -39,14 +62,25 @@ function Navbar() {
         </div>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <Link to="/" className="btn btn-ghost text-xl">
+          <img
+            src={fullTitle}
+            className="h-12 w-auto hidden md:block  top-[-20]"
+            alt="Talk Threads"
+          />
+          <img
+            src={icon}
+            className="h-14 w-auto md:hidden"
+            alt="Talk Threads"
+          />
+        </Link>
       </div>
       <div className="navbar-end">
         <div className="form-control ">
           <input
             type="text"
             placeholder="Search"
-            className="input p-2 input-bordered w-24 bg-slate-600 text-white md:w-auto md:p-4"
+            className="input p-2 input-bordered w-24 bg-slate-600 text-white sm:w-auto md:p-4"
           />
         </div>
         <div className="dropdown dropdown-end">
@@ -66,18 +100,33 @@ function Navbar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-slate-700 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
-            <li className="hover:bg-slate-900 rounded-lg">
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li className="hover:bg-slate-900 rounded-lg">
-              <a>Settings</a>
-            </li>
-            <li className="hover:bg-slate-900 rounded-lg">
-              <a>Logout</a>
-            </li>
+            {signedIn ? (
+              <>
+                {" "}
+                <li className="hover:bg-slate-900 rounded-lg">
+                  <a className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </a>
+                </li>
+                <li className="hover:bg-slate-900 rounded-lg">
+                  <a>Settings</a>
+                </li>
+                <li className="hover:bg-slate-900 rounded-lg">
+                  <div onClick={logout}>Logout</div>
+                </li>
+              </>
+            ) : (
+              <>
+                {" "}
+                <li className="hover:bg-slate-900 rounded-lg">
+                  <Link to="/user/signup">Sign up</Link>
+                </li>
+                <li className="hover:bg-slate-900 rounded-lg">
+                  <Link to="/user/login">Login</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
