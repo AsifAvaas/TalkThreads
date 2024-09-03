@@ -4,11 +4,11 @@ const User = require('../models/UserModel')
 const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
+const isProduction = process.env.NODE_ENV === 'production';
 const Token = require('../models/TokenModel')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
-
+const verifyToken = require('../middleware/Authentication')
 
 router.post('/user/create', body('name', 'Name must be 6 charecter Long').isLength({ min: 6 }),
     body('email', 'Invalid Email').isEmail(),
@@ -92,8 +92,16 @@ router.post('/user/login', async (req, res) => {
         const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_SECRET, { expiresIn: '15m' });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.REFRESH_SECRET, { expiresIn: '30d' });
 
-        res.cookie('accessToken', accessToken, { httpOnly: true });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true, secure: isProduction,
+            sameSite: isProduction ? 'Strict' : 'Lax',
+            maxAge: 15 * 60 * 1000
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true, secure: isProduction,
+            sameSite: isProduction ? 'Strict' : 'Lax',
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        });
 
         res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken });
     } catch (error) {
@@ -119,8 +127,16 @@ router.post('/google/login', async (req, res) => {
         const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_SECRET, { expiresIn: '15m' });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.REFRESH_SECRET, { expiresIn: '30d' });
 
-        res.cookie('accessToken', accessToken, { httpOnly: true });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true, secure: isProduction,
+            sameSite: isProduction ? 'Strict' : 'Lax',
+            maxAge: 15 * 60 * 1000
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true, secure: isProduction,
+            sameSite: isProduction ? 'Strict' : 'Lax',
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        });
 
         res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken });
     } catch (error) {
@@ -128,6 +144,13 @@ router.post('/google/login', async (req, res) => {
     }
 })
 
+router.post('/api/allData', verifyToken, (req, res) => {
+    try {
+        return res.status(200).json({ data: "data" })
+    } catch (error) {
+        return res.status(400).json({ error: error })
+    }
+})
 
 
 router.post('/user/resend', async (req, res) => {
@@ -193,17 +216,26 @@ router.get("/:id/verify/:token", async (req, res) => {
 
 
 router.post('/logout', async (req, res) => {
-    res.cookie('accessToken', '', {
-        httpOnly: true,
-        expires: new Date(0),
-    });
-    res.cookie('refreshToken', '', {
-        httpOnly: true,
-        expires: new Date(0),
-    });
+    try {
+        res.cookie('accessToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+            path: '/'
+        });
+        res.cookie('refreshToken', '', {
+            httpOnly: true,
+            expires: new Date(0),
+            path: '/'
+        });
 
-    res.status(200).json({ success: true, message: 'Logged out successfully' });
+        return res.status(200).json({ success: true, message: 'Logged out successfully' });
+    } catch (error) {
+        return res.status(200).json({ success: false, message: 'Loggiong out unsuccessful' });
+    }
+
 })
 
 
 module.exports = router
+
+

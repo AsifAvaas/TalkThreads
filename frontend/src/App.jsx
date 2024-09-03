@@ -3,14 +3,32 @@ import Home from "./Screens/Home";
 import Success from "./Screens/Success";
 import Signup from "./Screens/Signup";
 import Login from "./Screens/Login";
+import ProtectedRoutes from "./Components/auth/ProtectedRoutes";
+import BlogPage from "./Screens/BlogPage";
 export default function App() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <Routes>
-        <Route path="/" element={<Home />}></Route>
+        {/* <Route path="/" element={<Home />}></Route> */}
         <Route path="/user/login" element={<Login />}></Route>
         <Route path="/user/signup" element={<Signup />}></Route>
         <Route path="/success" element={<Success />}></Route>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoutes>
+              <Home />
+            </ProtectedRoutes>
+          }
+        ></Route>
+        <Route
+          path="/blogs/:id"
+          element={
+            <ProtectedRoutes>
+              <BlogPage />
+            </ProtectedRoutes>
+          }
+        ></Route>
       </Routes>
     </div>
   );
@@ -23,3 +41,5 @@ export default function App() {
 // like, comment ,view, (stat)
 // MVC
 // Notification
+
+// wen names are edited, all the blogs of that person should be updated

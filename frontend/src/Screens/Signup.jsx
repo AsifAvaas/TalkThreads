@@ -76,7 +76,7 @@ function Signup() {
   return (
     <section className="bg-gray-900">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-        <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
+        <section className="relative flex h-28 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
           <img
             alt=""
             src="https://images.unsplash.com/photo-1617195737496-bc30194e3a19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
@@ -111,11 +111,11 @@ function Signup() {
                 <img src={icon} alt="Home Icon" className="h-8 sm:h-12" />
               </Link>
 
-              <h1 className="mt-2 text-2xl font-bold  sm:text-3xl md:text-4xltext-white">
+              <h1 className=" text-2xl font-bold  sm:text-3xl md:text-4xltext-white">
                 Welcome to Talk Threads
               </h1>
 
-              <p className="mt-4 leading-relaxed text-gray-400">
+              <p className="mt-2 text-sm leading-relaxed text-gray-400">
                 THREADS OF INSIGHT, WOVEN TOGETHER
               </p>
             </div>
@@ -124,7 +124,7 @@ function Signup() {
             <form
               action="#"
               onSubmit={submit}
-              className="mt-8 grid grid-cols-6 gap-6"
+              className="mt-4 grid grid-cols-6 gap-6"
             >
               <div className="col-span-6">
                 <label
@@ -140,7 +140,7 @@ function Signup() {
                   name="name"
                   value={form.name}
                   onChange={onchange}
-                  className="mt-1 w-full rounded-md  shadow-sm border-gray-700 bg-gray-800 text-gray-200"
+                  className="mt-1 p-2 w-full rounded-md  shadow-sm border-gray-700 bg-gray-800 text-gray-200"
                 />
               </div>
 
@@ -158,7 +158,7 @@ function Signup() {
                   name="email"
                   value={form.email}
                   onChange={onchange}
-                  className="mt-1 w-full rounded-md  shadow-sm border-gray-700 bg-gray-800 text-gray-200"
+                  className="mt-1 p-2 w-full rounded-md  shadow-sm border-gray-700 bg-gray-800 text-gray-200"
                 />
               </div>
 
@@ -176,7 +176,7 @@ function Signup() {
                   name="password"
                   value={form.password}
                   onChange={onchange}
-                  className="mt-1 w-full rounded-md  shadow-sm border-gray-700 bg-gray-800 text-gray-200"
+                  className="mt-1 p-2 w-full rounded-md  shadow-sm border-gray-700 bg-gray-800 text-gray-200"
                 />
               </div>
 
@@ -228,12 +228,12 @@ function Signup() {
               <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                 <button
                   type="submit"
-                  className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent  focus:outline-none focus:ring active:text-blue-500 hover:bg-blue-700 hover:text-white"
+                  className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-2 text-sm font-medium text-white transition hover:bg-transparent  focus:outline-none focus:ring active:text-blue-500 hover:bg-blue-700 hover:text-white"
                 >
                   Create an account
                 </button>
 
-                <p className="mt-4 text-sm  sm:mt-0 text-gray-400">
+                <p className="mt-2 text-sm  sm:mt-0 text-gray-400">
                   Already have an account?
                   <Link to="/user/login" className=" underline text-gray-200">
                     Log in
