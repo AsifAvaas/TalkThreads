@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import icon from "../assets/Icon-white.png";
 import fullTitle from "../assets/full_title.png";
+import halfTitle from "../assets/titleWhite.png";
 function Navbar() {
   const navigate = useNavigate();
   const logout = async () => {
@@ -23,7 +24,7 @@ function Navbar() {
   const signedIn = localStorage.getItem("userId");
   const userMail = localStorage.getItem("email");
   return (
-    <div className="navbar bg-slate-800">
+    <div className="navbar bg-slate-800 sticky top-0 z-50 ">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -69,8 +70,13 @@ function Navbar() {
             alt="Talk Threads"
           />
           <img
+            src={halfTitle}
+            className="h-14 w-[150px] hidden mobile-view:block md:hidden"
+            alt="Talk Threads"
+          />
+          <img
             src={icon}
-            className="h-14 w-auto md:hidden"
+            className="h-14 w-auto  mobile-view:hidden"
             alt="Talk Threads"
           />
         </Link>

@@ -1,5 +1,4 @@
 import React from "react";
-import image from "../assets/1.jpg";
 import Like from "./Icons/Like";
 import Dislike from "./Icons/Dislike";
 import Comment from "./Icons/Comment";
@@ -9,26 +8,37 @@ function Blogs(props) {
   const text = props.blogBody;
 
   const words = text.split(" ");
-  const truncatedText =
-    words.length > 50 ? words.slice(0, 50).join(" ") + "..." : text;
+  const isTruncated = words.length > 50;
+  const truncatedText = isTruncated
+    ? words.slice(0, 50).join(" ") + "..."
+    : text;
   const blogDetails = (id) => {
     navigate(`/blogs/${id}`);
   };
   return (
     <div className="p-1 m-2 sm:p-3">
       <div className="w-full border border-gray-500 rounded-lg sm:rounded-lg p-1 bg-slate-800">
-        <img
-          onClick={() => {
-            blogDetails(props.blogId);
-          }}
-          src={image}
-          alt="Image 1"
-          className="w-full h-auto p-2 rounded-"
-        ></img>
+        {props.blogPicture && (
+          <img
+            src={props.blogPicture}
+            alt="Image 1"
+            className="w-full h-auto p-2 rounded-"
+          ></img>
+        )}
         <div className="p-2 ">
           <h1 className="font-bold text-lg">{props.blogName}</h1>
           <h3 className="text-gray-400 ">{props.authorName}</h3>
           <p className="text-gray-200">{truncatedText}</p>
+          {isTruncated && (
+            <span
+              onClick={() => {
+                blogDetails(props.blogId);
+              }}
+              className="text-blue-500 hover:underline cursor-pointer"
+            >
+              Read More
+            </span>
+          )}
           <div className="flex">
             <span
               onClick={() => {
@@ -37,12 +47,12 @@ function Blogs(props) {
               className="flex border w-min p-2 my-3 rounded-3xl hover:cursor-pointer"
             >
               <div className="flex border-r-2">
-                <div className="ml-1">2</div>
+                <div className="ml-1">{props.likes}</div>
                 <Like />
               </div>
               <div className="flex">
                 <Dislike />
-                <div className="mr-1">4</div>
+                <div className="mr-1">{props.disLikes}</div>
               </div>
             </span>
             <span

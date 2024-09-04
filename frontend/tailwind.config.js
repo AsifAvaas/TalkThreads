@@ -6,7 +6,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        'mobile-view': '400px',
+
+      },
+    },
   },
   plugins: [
     require('daisyui'),

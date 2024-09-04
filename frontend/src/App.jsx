@@ -5,6 +5,7 @@ import Signup from "./Screens/Signup";
 import Login from "./Screens/Login";
 import ProtectedRoutes from "./Components/auth/ProtectedRoutes";
 import BlogPage from "./Screens/BlogPage";
+import NewBlog from "./Screens/NewBlog";
 export default function App() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -26,6 +27,14 @@ export default function App() {
           element={
             <ProtectedRoutes>
               <BlogPage />
+            </ProtectedRoutes>
+          }
+        ></Route>
+        <Route
+          path="/blogs/new"
+          element={
+            <ProtectedRoutes>
+              <NewBlog />
             </ProtectedRoutes>
           }
         ></Route>
