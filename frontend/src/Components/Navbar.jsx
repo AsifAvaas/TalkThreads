@@ -1,11 +1,13 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import icon from "../assets/Icon-white.png";
 import fullTitle from "../assets/full_title.png";
 import halfTitle from "../assets/titleWhite.png";
-function Navbar() {
+function Navbar({ setQuery }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const logout = async () => {
     try {
       const response = await axios.post(
@@ -26,7 +28,7 @@ function Navbar() {
   return (
     <div className="navbar bg-slate-800 sticky top-0 z-50 ">
       <div className="navbar-start">
-        <div className="dropdown">
+        {/* <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,9 +62,26 @@ function Navbar() {
               <a>About</a>
             </li>
           </ul>
-        </div>
+        </div> */}
+        <Link to="/" className="btn btn-ghost text-xl">
+          <img
+            src={fullTitle}
+            className="h-12 w-auto hidden md:block  top-[-20]"
+            alt="Talk Threads"
+          />
+          <img
+            src={halfTitle}
+            className="h-14 w-[120px]  hidden mobile-view:block md:hidden"
+            alt="Talk Threads"
+          />
+          <img
+            src={icon}
+            className="h-14 w-auto  mobile-view:hidden"
+            alt="Talk Threads"
+          />
+        </Link>
       </div>
-      <div className="navbar-center">
+      {/* <div className="navbar-center">
         <Link to="/" className="btn btn-ghost text-xl">
           <img
             src={fullTitle}
@@ -80,15 +99,19 @@ function Navbar() {
             alt="Talk Threads"
           />
         </Link>
-      </div>
+      </div> */}
       <div className="navbar-end">
-        <div className="form-control ">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input p-2 input-bordered w-24 bg-slate-600 text-white sm:w-auto md:p-4"
-          />
-        </div>
+        {location.pathname === "/" && (
+          <div className="form-control ">
+            <input
+              type="text"
+              placeholder="Search"
+              className="input p-2 input-bordered w-24 bg-slate-600 text-white mobile-large-view:w-auto md:p-4"
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+        )}
+
         <div className="dropdown dropdown-end">
           <div
             tabIndex={0}
@@ -110,13 +133,13 @@ function Navbar() {
               <>
                 {" "}
                 <li className="hover:bg-slate-900 rounded-lg">
-                  <a className="justify-between">
-                    Profile
-                    <span className="badge">New</span>
-                  </a>
+                  <Link to="/profile">Profile</Link>
                 </li>
                 <li className="hover:bg-slate-900 rounded-lg">
-                  <a>Settings</a>
+                  <Link to="/blogs/myblog">My Blogs</Link>
+                </li>
+                <li className="hover:bg-slate-900 rounded-lg">
+                  <Link to="/settings">Settings</Link>
                 </li>
                 <li className="hover:bg-slate-900 rounded-lg">
                   <div onClick={logout}>Logout</div>

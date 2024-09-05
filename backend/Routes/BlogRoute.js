@@ -9,19 +9,32 @@ const mongoose = require('mongoose')
 
 
 
-
-
 router.get('/blogs/all', verifyToken, async (req, res) => {
     try {
-        const blogs = await Blogs.find().select('blogName blogBody blogPicture authorName likeCount dislikeCount');
-        if (blogs) {
-            return res.status(200).json({ success: true, blogs: blogs })
+        const { page = 1, limit = 5 } = req.query;
+
+        // Fetch total count of blogs
+        const totalBlogs = await Blogs.countDocuments();
+
+        // Fetch paginated blogs
+        const blogs = await Blogs.find()
+            .select('blogName blogBody blogPicture authorName likeCount dislikeCount')
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+
+        if (blogs.length > 0) {
+            return res.status(200).json({
+                success: true,
+                blogs,
+                totalBlogs // Include total blog count
+            });
         }
-        return res.status(401).json({ success: false, error: "Could not fetch blogs" })
+        return res.status(404).json({ success: false, error: "No more blogs available" });
     } catch (error) {
-        return res.status(401).json({ success: false, error: error })
+        return res.status(500).json({ success: false, error: error.message });
     }
-})
+});
+
 
 
 router.get('/blogs/:id', verifyToken, async (req, res) => {

@@ -169,7 +169,7 @@ function BlogPage() {
             />
           )}
 
-          <div className="pt-4 p-4 mb-4 rounded-2xl  bg-slate-800">
+          <div className="pt-4  p-4 my-4 rounded-2xl  bg-slate-800">
             <h1 className="text-3xl pb-2">{blog.blogName}</h1>
             <h3 className="text-xl text-gray-400">{blog.authorName}</h3>
             <p className="text-lg leading-snug">{blog.blogBody}</p>

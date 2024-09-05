@@ -8,7 +8,8 @@ export default {
   theme: {
     extend: {
       screens: {
-        'mobile-view': '400px',
+        'mobile-view': '360px',
+        'mobile-large-view': '400px',
 
       },
     },
