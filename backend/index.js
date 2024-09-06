@@ -22,7 +22,7 @@ app.use(express.json())
 MongDB();
 const allowedOrigins = [
     frontend,
-    'https://aust-carnival.vercel.app'
+    'https://talk-threads-rose.vercel.app'
 ];
 
 
