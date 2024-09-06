@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
 import Like from "../Components/Icons/Like";
@@ -8,13 +8,22 @@ import Edit from "../Components/Icons/Edit";
 import Delete from "../Components/Icons/Delete";
 function BlogPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [comment, setComment] = useState("");
   const [editModes, setEditModes] = useState({});
+  const [blogEdit, setBlogEdit] = useState(false);
   const [inputValues, setInputValues] = useState({});
   const [blog, setBlog] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const userId = localStorage.getItem("userId");
+  const [image, setImage] = useState(null);
+  const [blogForm, setBlogForm] = useState({
+    blogName: "",
+    blogPicture: "",
+    blogBody: "",
+  });
+
   const fetchBlog = async () => {
     try {
       const response = await axios.get(
@@ -37,6 +46,11 @@ function BlogPage() {
         );
         // console.log(blog);
         setBlog(blog);
+        setBlogForm({
+          blogName: response.data.blog.blogName,
+          blogBody: response.data.blog.blogBody,
+          authorName: response.data.blog.authorName,
+        });
       } else {
         console.log(response.data.error);
       }
@@ -155,13 +169,72 @@ function BlogPage() {
       console.error(`Error: ${error.message || error}`);
     }
   };
+  const onchange = async (e) => {
+    setBlogForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  const submitBlog = async () => {
+    const formData = new FormData();
+    formData.append("blogId", blog._id);
+    formData.append("blogName", blogForm.blogName);
+    formData.append("blogBody", blogForm.blogBody);
+    if (image) {
+      formData.append("image", image); // Attach the image if there is one
+    }
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_Backend_Route}/api/blogs/update`,
+        formData,
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        fetchBlog();
+        setBlogEdit(!blogEdit);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const deleteBlog = async () => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_Backend_Route}/api/blogs/delete`,
+        {
+          data: {
+            blogId: blog._id,
+          },
+          withCredentials: true,
+        }
+      );
+      if (response.data.success) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
       <Navbar />
-      <div className="flex   justify-center">
-        <div className="max-w-[1200px] w-ful ">
-          {blog.blogPicture && (
+      <div className="flex justify-center">
+        <div className="max-w-[1200px] w-full">
+          {blogEdit && (
+            <>
+              {" "}
+              <h2 className="my-4 text-2xl">Add a new photo</h2>
+              <input
+                type="file"
+                className="mb-2 file-input file-input-bordered bg-slate-600 border-slate-700 w-full max-w-xs"
+                onChange={onImageChange}
+              />
+            </>
+          )}
+          {blog.blogPicture && !blogEdit && (
             <img
               src={blog.blogPicture}
               alt="blog image"
@@ -169,11 +242,76 @@ function BlogPage() {
             />
           )}
 
-          <div className="pt-4  p-4 my-4 rounded-2xl  bg-slate-800">
-            <h1 className="text-3xl pb-2">{blog.blogName}</h1>
-            <h3 className="text-xl text-gray-400">{blog.authorName}</h3>
-            <p className="text-lg leading-snug">{blog.blogBody}</p>
-            <div className="flex">
+          <div className="pt-4 p-4 my-4 rounded-2xl bg-slate-800 w-full">
+            {blogEdit ? (
+              <>
+                <div className="w-full font-bold">Blog Name:</div>
+                <input
+                  className="rounded-xl w-full my-2 text-lg bg-slate-400 text-black"
+                  value={blogForm.blogName}
+                  type="text"
+                  name="blogName"
+                  onChange={onchange}
+                />
+              </>
+            ) : (
+              <h1 className="text-3xl pb-2 w-full">{blog.blogName}</h1>
+            )}
+
+            <h3 className="text-xl text-gray-400 w-full">{blog.authorName}</h3>
+
+            {blogEdit ? (
+              <>
+                <div className="w-full font-bold">Blog Body:</div>
+                <textarea
+                  className="rounded-xl w-full h-[300px] my-2 text-lg bg-slate-400 text-black"
+                  value={blogForm.blogBody}
+                  type="text"
+                  name="blogBody"
+                  onChange={onchange}
+                />
+              </>
+            ) : (
+              <p className="text-lg leading-snug w-full">{blog.blogBody}</p>
+            )}
+
+            {userId === blog.authorId && (
+              <div className="w-full">
+                {blogEdit ? (
+                  <>
+                    <button
+                      onClick={() => submitBlog()}
+                      className="py-1 border my-3 mr-3 px-8 rounded-2xl text-lg hover:bg-green-500 hover:text-black "
+                    >
+                      Submit
+                    </button>
+                    <button
+                      onClick={() => setBlogEdit(!blogEdit)}
+                      className="py-1 border my-3 px-8 rounded-2xl text-lg hover:bg-blue-400 hover:text-black "
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setBlogEdit(!blogEdit)}
+                      className="py-1 border my-3 mr-3 px-8 rounded-2xl text-lg bg-blue-600 hover:bg-blue-300 hover:text-black"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="py-1 border my-3 px-8 rounded-2xl text-lg bg-red-600 hover:bg-red-800"
+                      onClick={deleteBlog} // Example delete handler
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
+            <div className="flex w-full justify-between items-center">
               <span className="flex border w-min p-2 my-3 rounded-3xl">
                 <div className="flex border-r-2">
                   <div className="ml-1">{blog.likeCount}</div>
@@ -195,7 +333,8 @@ function BlogPage() {
                 </div>
               </span>
             </div>
-            <h2 className="text-2xl ">Comments</h2>
+
+            <h2 className="text-2xl w-full">Comments</h2>
             <textarea
               value={comment}
               className="w-full bg-slate-700 my-2 rounded"
@@ -204,17 +343,18 @@ function BlogPage() {
             />
             <button
               onClick={submitComment}
-              className="py-2 px-6 rounded-xl bg-blue-700 border-none text-white hover:bg-blue-900"
+              className="py-2 px-6 rounded-xl bg-blue-700 border-none text-white hover:bg-blue-900 "
             >
               Share
             </button>
-            {blog.comments && blog.comments.length > 0 ? ( // Ensure blog.comments exists
+
+            {blog.comments && blog.comments.length > 0 ? (
               blog.comments.map((comment, index) => (
                 <div
                   key={index}
-                  className="mt-4 border border-gray-400 p-2 rounded-xl"
+                  className="mt-4 border border-gray-400 p-2 rounded-xl w-full"
                 >
-                  <div className="flex w-full justify-between items-center">
+                  <div className="flex justify-between items-center w-full">
                     <div className="font-bold">{comment.commenterName}</div>
                     {comment.commenterId === userId && (
                       <div className="ml-auto flex space-x-2">
@@ -245,7 +385,7 @@ function BlogPage() {
                     <>
                       <input
                         type="text"
-                        className="bg-inherit p-1 rounded-xl"
+                        className="bg-inherit p-1 rounded-xl w-full"
                         value={
                           inputValues[index] !== undefined
                             ? inputValues[index]

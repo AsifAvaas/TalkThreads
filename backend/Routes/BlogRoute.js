@@ -114,11 +114,15 @@ router.post('/blogs/create', verifyToken, upload.single('image'), async (req, re
 
 })
 
-router.put('/blogs/update', verifyToken, async (req, res) => {
-    const { blogId, blogName, blogPicture, blogBody } = req.body
+router.put('/blogs/update', verifyToken, upload.single('image'), async (req, res) => {
+    const { blogId, blogName, blogBody } = req.body
     try {
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path);
+            blogPicture = result.secure_url;
+        }
         const blog = await Blogs.findByIdAndUpdate(blogId, {
-            blogName, blogPicture, blogBody
+            blogName, blogPicture, blogBody,
         }, { new: true })
 
         if (!blog) {

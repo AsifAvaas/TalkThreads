@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import icon from "../assets/Icon-white.png";
@@ -9,6 +9,7 @@ import ProfileIcon from "../assets/profile.jpg";
 function Navbar({ setQuery }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [profilePic, setProfilePic] = useState(null);
 
   const logout = async () => {
     try {
@@ -27,7 +28,13 @@ function Navbar({ setQuery }) {
   };
   const signedIn = localStorage.getItem("userId");
   const userMail = localStorage.getItem("email");
-  const profilePic = localStorage.getItem("profilePic");
+  useEffect(() => {
+    // Retrieve the profile picture from localStorage on component mount
+    const storedPic = localStorage.getItem("profilePic");
+    if (storedPic) {
+      setProfilePic(storedPic);
+    }
+  }, []);
   return (
     <div className="navbar bg-slate-800 sticky top-0 z-50 ">
       <div className="navbar-start">
@@ -123,9 +130,13 @@ function Navbar({ setQuery }) {
           >
             <div className="w-10 h- rounded-full">
               {profilePic ? (
-                <img alt="Tailwind CSS Navbar component" src={profilePic} />
+                <img alt="Profile" src={profilePic} loading="lazy" />
               ) : (
-                <img alt="Tailwind CSS Navbar component" src={ProfileIcon} />
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src={ProfileIcon}
+                  loading="lazy"
+                />
               )}
             </div>
           </div>
