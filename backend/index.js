@@ -22,7 +22,7 @@ app.use(express.json())
 MongDB();
 const allowedOrigins = [
     frontend,
-    'https://talk-threads-rose.vercel.app'
+    'https://talk-threads-seven.vercel.app'
 ];
 
 
