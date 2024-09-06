@@ -110,7 +110,7 @@ function Home() {
             </div> */}
             <div
               onClick={() => navigate("/blogs/new")}
-              className="w-full p-3 h-20 bg-slate-700 rounded-xl text-gray-400"
+              className="w-full p-3 h-20 bg-slate-700 rounded-xl text-gray-400 hover:cursor-pointer"
               placeholder="Add a new Blog"
               name="newBlog"
             >

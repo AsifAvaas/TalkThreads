@@ -11,6 +11,7 @@ const frontend = process.env.FrontEnd
 const UserRouter = require('./Routes/UserRoute')
 const AuthenticationRouter = require('./Routes/authenticaionRoute')
 const BlogRouter = require('./Routes/BlogRoute')
+const ProfileRouter = require('./Routes/ProfileRoute')
 
 
 
@@ -56,6 +57,7 @@ app.get('/', (req, res) => {
 app.use('/auth', UserRouter)
 app.use('/auth', AuthenticationRouter)
 app.use('/api', BlogRouter)
+app.use('/api', ProfileRouter)
 
 
 

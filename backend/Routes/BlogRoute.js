@@ -35,6 +35,31 @@ router.get('/blogs/all', verifyToken, async (req, res) => {
     }
 });
 
+router.get('/blogs/myblogs', verifyToken, async (req, res) => {
+    try {
+        const { page = 1, limit = 5, userId } = req.query; // Accept userId from the query params
+
+        // Fetch total count of blogs for the specific user
+        const totalBlogs = await Blogs.countDocuments({ authorId: userId });
+
+        // Fetch paginated blogs for the specific user
+        const blogs = await Blogs.find({ authorId: userId })
+            .select('blogName blogBody blogPicture authorName likeCount dislikeCount')
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+
+        if (blogs.length > 0) {
+            return res.status(200).json({
+                success: true,
+                blogs,
+                totalBlogs // Include total blog count
+            });
+        }
+        return res.status(404).json({ success: false, error: "No more blogs available" });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 
 router.get('/blogs/:id', verifyToken, async (req, res) => {

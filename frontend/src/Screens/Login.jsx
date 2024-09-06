@@ -33,6 +33,7 @@ function Login() {
       if (response.data.success) {
         localStorage.setItem("userId", response.data.userId);
         localStorage.setItem("email", form.email);
+        localStorage.setItem("profilePic", response.data.profilePic);
         navigate("/");
       }
       if (response.data.error) {
@@ -75,6 +76,7 @@ function Login() {
       if (response.data.success) {
         localStorage.setItem("userId", response.data.userId);
         localStorage.setItem("email", e.email);
+        localStorage.setItem("profilePic", response.data.profilePic);
         navigate("/");
       }
     } catch (error) {

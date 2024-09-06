@@ -4,7 +4,6 @@ import BlogPage from "../Screens/BlogPage";
 import NewBlog from "../Screens/NewBlog";
 import Profile from "../Screens/Profile";
 import MyBlogs from "../Screens/MyBlogs";
-import Settings from "../Screens/Settings";
 import ProtectedLayout from "./ProtectedLayout";
 
 const ProtectedAppRoutes = () => (
@@ -15,7 +14,6 @@ const ProtectedAppRoutes = () => (
       <Route path="/blogs/new" element={<NewBlog />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/blogs/myblog" element={<MyBlogs />} />
-      <Route path="/settings" element={<Settings />} />
     </Route>
   </Routes>
 );

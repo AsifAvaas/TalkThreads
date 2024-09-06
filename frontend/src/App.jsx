@@ -24,4 +24,4 @@ export default function App() {
 // like, comment ,view, stat                 (done)
 // Notification
 
-// when names are edited, all the blogs of that person should be updated
+// when names are edited, all the blogs of that person should be updated (done)

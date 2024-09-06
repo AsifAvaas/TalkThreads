@@ -103,7 +103,7 @@ router.post('/user/login', async (req, res) => {
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
-        res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken });
+        res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken, profilePic: user.profilePic });
     } catch (error) {
         //console.error(error);
         res.status(500).json({ success: false, error: "Server error" });
@@ -138,19 +138,12 @@ router.post('/google/login', async (req, res) => {
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
-        res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken });
+        res.json({ success: true, message: "Logged in successfully", userId: user._id, accessToken, refreshToken, profilePic: user.profilePic });
     } catch (error) {
         res.status(500).json({ success: false, error: "Server error" });
     }
 })
 
-router.post('/api/allData', verifyToken, (req, res) => {
-    try {
-        return res.status(200).json({ data: "data" })
-    } catch (error) {
-        return res.status(400).json({ error: error })
-    }
-})
 
 
 router.post('/user/resend', async (req, res) => {

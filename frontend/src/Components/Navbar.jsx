@@ -4,6 +4,8 @@ import axios from "axios";
 import icon from "../assets/Icon-white.png";
 import fullTitle from "../assets/full_title.png";
 import halfTitle from "../assets/titleWhite.png";
+// import ProfileIcon from "./Icons/ProfileIcon";
+import ProfileIcon from "../assets/profile.jpg";
 function Navbar({ setQuery }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,6 +27,7 @@ function Navbar({ setQuery }) {
   };
   const signedIn = localStorage.getItem("userId");
   const userMail = localStorage.getItem("email");
+  const profilePic = localStorage.getItem("profilePic");
   return (
     <div className="navbar bg-slate-800 sticky top-0 z-50 ">
       <div className="navbar-start">
@@ -71,7 +74,7 @@ function Navbar({ setQuery }) {
           />
           <img
             src={halfTitle}
-            className="h-14 w-[120px]  hidden mobile-view:block md:hidden"
+            className="h-12 w-[120px]  hidden mobile-view:block md:hidden"
             alt="Talk Threads"
           />
           <img
@@ -118,11 +121,12 @@ function Navbar({ setQuery }) {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+            <div className="w-10 h- rounded-full">
+              {profilePic ? (
+                <img alt="Tailwind CSS Navbar component" src={profilePic} />
+              ) : (
+                <img alt="Tailwind CSS Navbar component" src={ProfileIcon} />
+              )}
             </div>
           </div>
           <ul
@@ -137,9 +141,6 @@ function Navbar({ setQuery }) {
                 </li>
                 <li className="hover:bg-slate-900 rounded-lg">
                   <Link to="/blogs/myblog">My Blogs</Link>
-                </li>
-                <li className="hover:bg-slate-900 rounded-lg">
-                  <Link to="/settings">Settings</Link>
                 </li>
                 <li className="hover:bg-slate-900 rounded-lg">
                   <div onClick={logout}>Logout</div>
