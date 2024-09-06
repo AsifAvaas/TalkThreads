@@ -196,7 +196,7 @@ router.get("/:id/verify/:token", async (req, res) => {
 
         await user.updateOne({ _id: user._id, isVerified: true })
         await Token.deleteOne({ _id: token._id });
-        res.redirect(`http://localhost:3000/user/login`)
+        res.redirect(`${process.env.FrontEnd}/user/login`)
         // res.status(200).json({ message: "Varification successful" })
 
     } catch (error) {
