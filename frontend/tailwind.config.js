@@ -9,7 +9,7 @@ export default {
     extend: {
       screens: {
         'mobile-view': '360px',
-        'mobile-large-view': '400px',
+        'mobile-large-view': '415px',
 
       },
     },

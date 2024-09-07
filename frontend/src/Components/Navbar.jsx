@@ -128,7 +128,7 @@ function Navbar({ setQuery }) {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-10 h- rounded-full">
+            <div className="w-10  rounded-full">
               {profilePic ? (
                 <img alt="Profile" src={profilePic} loading="lazy" />
               ) : (
