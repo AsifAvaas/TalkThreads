@@ -115,25 +115,39 @@ router.post('/blogs/create', verifyToken, upload.single('image'), async (req, re
 })
 
 router.put('/blogs/update', verifyToken, upload.single('image'), async (req, res) => {
-    const { blogId, blogName, blogBody } = req.body
+    const { blogId, blogName, blogBody } = req.body;
+    let blogPicture;
+
     try {
+        // If an image is provided, upload to Cloudinary
         if (req.file) {
             const result = await cloudinary.uploader.upload(req.file.path);
             blogPicture = result.secure_url;
         }
-        const blog = await Blogs.findByIdAndUpdate(blogId, {
-            blogName, blogPicture, blogBody,
-        }, { new: true })
 
-        if (!blog) {
+        // Find the existing blog to get the current image URL if no new image is uploaded
+        const existingBlog = await Blogs.findById(blogId);
+
+        if (!existingBlog) {
             return res.json({ success: false, message: "Blog not found" });
         }
+
+        // If no new image is uploaded, keep the current blog picture
+        blogPicture = blogPicture || existingBlog.blogPicture;
+
+        // Update the blog
+        const blog = await Blogs.findByIdAndUpdate(blogId, {
+            blogName,
+            blogPicture,
+            blogBody,
+        }, { new: true });
+
         return res.status(200).json({ success: true, blog });
     } catch (error) {
         console.error("Error updating blog:", error);
         return res.status(500).json({ success: false, message: "An error occurred while updating the blog" });
     }
-})
+});
 
 router.delete('/blogs/delete', verifyToken, async (req, res) => {
     const { blogId } = req.body
