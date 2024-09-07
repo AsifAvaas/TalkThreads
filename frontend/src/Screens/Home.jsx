@@ -152,7 +152,11 @@ function Home() {
           ) : (
             <div>No blogs are present</div>
           )}
-          {loading && <span className="loading loading-dots loading-lg"></span>}
+          {loading && (
+            <div className="flex justify-center">
+              <span className="loading loading-dots loading-lg"></span>
+            </div>
+          )}
         </div>
       </div>
     </>
