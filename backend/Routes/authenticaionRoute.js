@@ -17,7 +17,7 @@ router.post('/refresh-token', (req, res) => {
         res.cookie('accessToken', newToken, {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'Strict' : 'Lax',
+            sameSite: 'none',
             maxAge: 15 * 60 * 1000
 
         });

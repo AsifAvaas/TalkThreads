@@ -94,12 +94,12 @@ router.post('/user/login', async (req, res) => {
 
         res.cookie('accessToken', accessToken, {
             httpOnly: true, secure: isProduction,
-            sameSite: isProduction ? 'Strict' : 'Lax',
+            sameSite: 'none',
             maxAge: 15 * 60 * 1000
         });
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true, secure: isProduction,
-            sameSite: isProduction ? 'Strict' : 'Lax',
+            sameSite: 'none',
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
@@ -129,12 +129,12 @@ router.post('/google/login', async (req, res) => {
 
         res.cookie('accessToken', accessToken, {
             httpOnly: true, secure: isProduction,
-            sameSite: isProduction ? 'Strict' : 'Lax',
+            sameSite: 'none',
             maxAge: 15 * 60 * 1000
         });
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true, secure: isProduction,
-            sameSite: isProduction ? 'Strict' : 'Lax',
+            sameSite: 'none',
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 

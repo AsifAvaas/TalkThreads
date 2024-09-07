@@ -26,7 +26,7 @@ const verifyToken = (req, res, next) => {
                 res.cookie('accessToken', newAccessToken, {
                     httpOnly: true,
                     secure: isProduction,
-                    sameSite: isProduction ? 'Strict' : 'Lax',
+                    sameSite: 'none',
                     maxAge: 15 * 60 * 1000
                 });
 
