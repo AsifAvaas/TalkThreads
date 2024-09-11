@@ -17,6 +17,8 @@ function BlogPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const userId = localStorage.getItem("userId");
+  const [loadingLikeDislike, setLoadingLikeDislike] = useState(false);
+  const [loadingComment, setLoadingComment] = useState(false);
   const [image, setImage] = useState(null);
   const [blogForm, setBlogForm] = useState({
     blogName: "",
@@ -65,6 +67,7 @@ function BlogPage() {
     if (!comment) {
       return;
     }
+    setLoadingComment(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_Backend_Route}/api/blogs/comment`,
@@ -84,6 +87,7 @@ function BlogPage() {
     } catch (error) {
       console.log(error);
     }
+    setLoadingComment(false);
   };
   const toggleEditMode = (index) => {
     setEditModes((prevModes) => ({
@@ -151,6 +155,7 @@ function BlogPage() {
     }
   };
   const BloglikeDislike = async (data) => {
+    setLoadingLikeDislike(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_Backend_Route}/api/blog/impression/${data}`,
@@ -168,6 +173,7 @@ function BlogPage() {
     } catch (error) {
       console.error(`Error: ${error.message || error}`);
     }
+    setLoadingLikeDislike(false);
   };
   const onchange = async (e) => {
     setBlogForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -319,7 +325,11 @@ function BlogPage() {
                     onClick={() => BloglikeDislike("like")}
                     className={`${isLiked ? "text-green-600" : ""} hover:cursor-pointer`}
                   >
-                    <Like />
+                    {loadingLikeDislike ? (
+                      <span className="loading loading-ring loading-md"></span>
+                    ) : (
+                      <Like />
+                    )}
                   </div>
                 </div>
                 <div className="flex">
@@ -327,7 +337,11 @@ function BlogPage() {
                     onClick={() => BloglikeDislike("dislike")}
                     className={`${isDisliked ? "text-red-600" : ""} hover:cursor-pointer`}
                   >
-                    <Dislike />
+                    {loadingLikeDislike ? (
+                      <span className="loading loading-ring loading-md"></span>
+                    ) : (
+                      <Dislike />
+                    )}
                   </div>
                   <div className="mr-1">{blog.dislikeCount}</div>
                 </div>
@@ -345,7 +359,7 @@ function BlogPage() {
               onClick={submitComment}
               className="py-2 px-6 rounded-xl bg-blue-700 border-none text-white hover:bg-blue-900 "
             >
-              Share
+              {loadingComment ? "Posting..." : "Share"}
             </button>
 
             {blog.comments && blog.comments.length > 0 ? (
