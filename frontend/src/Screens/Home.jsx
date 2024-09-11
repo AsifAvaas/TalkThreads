@@ -17,6 +17,7 @@ function Home() {
   const [hasMore, setHasMore] = useState(true); // To check if more blogs are available
   const observer = useRef();
   const [totalBlogs, setTotalBlogs] = useState(0); // Track total number of blogs
+  const [pageLoading, setPageLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -50,6 +51,9 @@ function Home() {
 
           return updatedBlogs;
         });
+        if (page === 1) {
+          setPageLoading(false);
+        }
       } else {
         console.log(response.data.error);
       }
@@ -57,6 +61,7 @@ function Home() {
     } catch (error) {
       console.log(error);
       setLoading(false);
+      setPageLoading(false);
     }
   };
 
@@ -91,23 +96,16 @@ function Home() {
     });
   });
 
-  return (
+  return pageLoading ? (
+    <div className="h-screen w-full bg-slate-900 text-white flex justify-center items-center">
+      <span className="loading loading-spinner loading-lg"></span>
+    </div>
+  ) : (
     <>
       <Navbar setQuery={setQuery} />
       <div className="flex justify-center">
         <div className="container w-full max-w-5xl">
           <div className="p-1 m-2 sm:p-3">
-            {/* <div>
-              <input
-                type="search"
-                className="bg-slate-600 my-4 p-2 rounded-xl w-full"
-                placeholder="Search"
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                }}
-              />
-            </div> */}
             <div
               onClick={() => navigate("/blogs/new")}
               className="w-full p-3 h-20 bg-slate-700 rounded-xl text-gray-400 hover:cursor-pointer"
@@ -120,7 +118,6 @@ function Home() {
           {filteredBlogs.length > 0 ? (
             filteredBlogs.map((blogs, index) => {
               if (filteredBlogs.length === index + 1) {
-                // Attach observer to the last blog
                 return (
                   <div ref={lastBlogElementRef} key={blogs._id}>
                     <Blogs
