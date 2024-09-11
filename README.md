@@ -1,8 +1,8 @@
-# Talk Thread 
+# Talk Threads 
 
 ## Overview
 
-**Talk Thread**  is a community-driven blog platform where users can not only explore various blogs but also contribute their own and interact with others through comments, likes, and dislikes.
+**Talk Threads**  is a community-driven blog platform where users can not only explore various blogs but also contribute their own and interact with others through comments, likes, and dislikes.
 
 
 ![Homepage Screenshot](./frontend/src/assets/Banner.png)
