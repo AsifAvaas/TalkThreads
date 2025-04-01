@@ -3,6 +3,7 @@ import Success from "./Screens/Success";
 import Signup from "./Screens/Signup";
 import Login from "./Screens/Login";
 import ProtectedAppRoutes from "./Components/ProtectedAppRoutes";
+import Home from "./Screens/Home";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <Route path="/user/login" element={<Login />}></Route>
         <Route path="/user/signup" element={<Signup />}></Route>
         <Route path="/success" element={<Success />}></Route>
+        <Route path="/" element={<Home />} />
         <Route path="/*" element={<ProtectedAppRoutes />} />
       </Routes>
     </div>

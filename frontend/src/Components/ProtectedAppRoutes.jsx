@@ -9,7 +9,6 @@ import ProtectedLayout from "./ProtectedLayout";
 const ProtectedAppRoutes = () => (
   <Routes>
     <Route element={<ProtectedLayout />}>
-      <Route path="/" element={<Home />} />
       <Route path="/blogs/:id" element={<BlogPage />} />
       <Route path="/blogs/new" element={<NewBlog />} />
       <Route path="/profile" element={<Profile />} />
