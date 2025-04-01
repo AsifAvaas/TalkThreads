@@ -9,6 +9,7 @@ import Navbar from "../Components/Navbar";
 import Blogs from "../Components/Blogs";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { use } from "react";
 function Home() {
   const [allBlogs, setAllBlogs] = useState([]);
   const [query, setQuery] = useState("");
@@ -20,6 +21,13 @@ function Home() {
   const [pageLoading, setPageLoading] = useState(true);
 
   const navigate = useNavigate();
+
+  const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    if (!userId) {
+      navigate("/user/login");
+    }
+  }, []);
 
   const fetchBlogs = async () => {
     try {
